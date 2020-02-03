@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFrameworks>netstandard2.0</TargetFrameworks>
+		
+		<AssemblyVersion>0.1.0</AssemblyVersion>
+		<AssemblyName>VK</AssemblyName>
+		<Description>shaderc binding for .net</Description>
+		<Product>shaderc</Product>
+		<PackageLicence>MIT</PackageLicence>
+		<PackageTags>vulkan shaderc glsl net binding shader</PackageTags>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageVersion>$(AssemblyVersion)-beta</PackageVersion>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+		<PackageProjectUrl>https://github.com/jpbruyere/shaderc.net/blob/master/README.md</PackageProjectUrl>
+<!--		<Icon>vk.net-64.png</Icon>
+		<PackageIcon>vk.net-64.png</PackageIcon>-->
+		<SynchReleaseVersion>false</SynchReleaseVersion>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Compile Include="$(SolutionDir)build/generated/*.cs" />
+	</ItemGroup>
+	
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<DefineConstants>TRACE;NETSTANDARD;NETSTANDARD2_0;DEBUG</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<DefineConstants>NETSTANDARD;NETSTANDARD2_0</DefineConstants>
+	</PropertyGroup>
+
+</Project>
