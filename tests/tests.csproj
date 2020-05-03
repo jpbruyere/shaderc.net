@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFrameworks>net472</TargetFrameworks>
+		<EnableDefaultNoneItems>false</EnableDefaultNoneItems>
+		<OutputPath>$(SolutionDir)build\$(Configuration)\</OutputPath>
+		<IntermediateOutputPath>$(SolutionDir)build\obj\$(Configuration)\</IntermediateOutputPath>
+	</PropertyGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\shaderc\shaderc.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+		<!--<EmbeddedResource Include="shaders\**\*.*">
+			<LogicalName>shaders.%(Filename)%(Extension)</LogicalName>
+		</EmbeddedResource>-->
+		<None Include="shaders\**\*.*">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+</Project>
