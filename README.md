@@ -12,15 +12,13 @@
   </a>
 </p>
 
-### shaderc.net
+# shaderc.net
 
 Net bindings for [google shaderc](https://github.com/google/shaderc).
 
-### usage
-
 #### spirv compilation
-This sample use (vk.net)[https://github.com/jpbruyere/vk.net] to create the shader module.
-On success, `Result` object will hold a native pointer on the generated spirv code suitable for the `ShaderModuleCreateInfo` pPode field. This pointer will stay valid until the `Result` disposal.
+This sample use [vk.net](https://github.com/jpbruyere/vk.net) to create the shader module.
+On success, `Result` object will hold a native pointer on the generated spirv code suitable for the `ShaderModuleCreateInfo` pCode field. This pointer will stay valid until the `Result` disposal.
 
 ```csharp
 using (Compiler comp = new Compiler ()) {
