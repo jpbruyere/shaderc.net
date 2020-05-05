@@ -67,7 +67,7 @@ namespace shaderc {
 		/// <param name="incContent">if resolution succeeded, contain the source code in plain text of the include</param>
 		protected virtual bool TryFindInclude (string source, string include, IncludeType incType, out string incFile, out string incContent) {
 			if (incType == IncludeType.Relative) {
-				incFile = Path.Combine (Path.GetDirectoryName(source), include);
+				incFile = Path.Combine (Path.GetDirectoryName (source), include);
 				if (File.Exists (incFile)) {
 					using (StreamReader sr = new StreamReader (incFile))
 						incContent = sr.ReadToEnd ();
@@ -84,7 +84,7 @@ namespace shaderc {
 					}
 				}
 			}
-			
+
 			incFile = "";
 			incContent = "";
 			return false;
@@ -100,7 +100,7 @@ namespace shaderc {
 				using (StreamReader sr = new StreamReader (incFile))
 					content = sr.ReadToEnd ();
 
-			IncludeResult result = new IncludeResult (incFile, content, userData.ToInt32());
+			IncludeResult result = new IncludeResult (incFile, content, userData.ToInt32 ());
 			IntPtr irPtr = Marshal.AllocHGlobal (Marshal.SizeOf<IncludeResult> ());
 			Marshal.StructureToPtr (result, irPtr, true);
 			return irPtr;
@@ -139,7 +139,7 @@ namespace shaderc {
 		/// <param name="name">Name.</param>
 		/// <param name="value">Value.</param>
 		public void AddMacroDefinition (string name, string value = null) => NativeMethods.shaderc_compile_options_add_macro_definition (
-			handle, name, (ulong)name.Length, value, string.IsNullOrEmpty(value) ? 0 : (ulong)value.Length);
+			handle, name, (ulong)name.Length, value, string.IsNullOrEmpty (value) ? 0 : (ulong)value.Length);
 		/// <summary>
 		/// Sets the source language.  The default is GLSL.
 		/// </summary>
@@ -151,18 +151,134 @@ namespace shaderc {
 		/// <summary>
 		/// Sets the compiler mode to generate debug information in the output.
 		/// </summary>
-		public void SetDebugInfoOn () => NativeMethods.shaderc_compile_options_set_generate_debug_info (handle);
+		public void EnableDebugInfo () => NativeMethods.shaderc_compile_options_set_generate_debug_info (handle);
 		/// <summary>
 		/// Sets the compiler mode to suppress warnings, overriding warnings-as-errors
 		/// mode. When both suppress-warnings and warnings-as-errors modes are
 		/// turned on, warning messages will be inhibited, and will not be emitted
 		/// as error messages.
 		/// </summary>
-		public void SetSuppressWarnings () => NativeMethods.shaderc_compile_options_set_suppress_warnings (handle);
+		public void DisableWarnings () => NativeMethods.shaderc_compile_options_set_suppress_warnings (handle);
+		/// <summary>
+		/// Forces the GLSL language version and profile to a given pair. The version
+		/// number is the same as would appear in the #version annotation in the source.
+		/// Version and profile specified here overrides the #version annotation in the
+		/// source. Use profile: 'shaderc_profile_none' for GLSL versions that do not
+		/// define profiles, e.g. versions below 150.
+		/// </summary>
+		public void ForceVersionAndProfile (int version, Profile profile) =>
+			NativeMethods.shaderc_compile_options_set_forced_version_profile (handle, version, profile);
+		/// <summary>
+		/// Sets the target shader environment, affecting which warnings or errors will
+		/// be issued.  The version will be for distinguishing between different versions
+		/// of the target environment.  The version value should be either 0 or
+		/// a value listed in shaderc_env_version.  The 0 value maps to Vulkan 1.0 if
+		/// |target| is Vulkan, and it maps to OpenGL 4.5 if |target| is OpenGL.
+		/// </summary>
+		public void SetTargetEnvironment (TargetEnvironment target, EnvironmentVersion version) =>
+			NativeMethods.shaderc_compile_options_set_target_env (handle, target, version);
+		/// <summary>
+		/// Sets the target SPIR-V version. The generated module will use this version
+		/// of SPIR-V.  Each target environment determines what versions of SPIR-V
+		/// it can consume.  Defaults to the highest version of SPIR-V 1.0 which is
+		/// required to be supported by the target environment.  E.g. Default to SPIR-V
+		/// 1.0 for Vulkan 1.0 and SPIR-V 1.3 for Vulkan 1.1.
+		/// </summary>
+		public SpirVVersion TargetSpirVVersion {
+			set => NativeMethods.shaderc_compile_options_set_target_spirv (handle, value);
+		}
+		/// <summary>
+		/// Sets the compiler mode to treat all warnings as errors. Note the
+		/// suppress-warnings mode overrides this option, i.e. if both
+		/// warning-as-errors and suppress-warnings modes are set, warnings will not
+		/// be emitted as error messages.
+		/// </summary>
+		public void EnableWarningsAsErrors () =>
+			NativeMethods.shaderc_compile_options_set_warnings_as_errors (handle);
+		/// <summary>
+		/// Sets a resource limit.
+		/// </summary>
+		public void SetLimit (Limit limit, int value) =>
+			NativeMethods.shaderc_compile_options_set_limit (handle, limit, value);
+		/// <summary>
+		/// Sets whether the compiler should automatically assign bindings to uniforms
+		/// that aren't already explicitly bound in the shader source.
+		/// </summary>
+		public bool AutoBindUniforms {
+			set => NativeMethods.shaderc_compile_options_set_auto_bind_uniforms (handle, value);
+		}
+		/// <summary>
+		/// Sets whether the compiler should use HLSL IO mapping rules for bindings.
+		/// Defaults to false.
+		/// </summary>
+		public bool HlslIoMapping {
+			set => NativeMethods.shaderc_compile_options_set_hlsl_io_mapping(handle, value);
+		}
+		/// <summary>
+		/// Sets whether the compiler should determine block member offsets using HLSL
+		/// packing rules instead of standard GLSL rules.  Defaults to false.  Only
+		/// affects GLSL compilation.  HLSL rules are always used when compiling HLSL.
+		/// </summary>
+		public bool HlslOffsets {
+			set => NativeMethods.shaderc_compile_options_set_hlsl_offsets (handle, value);
+		}
+		/// <summary>
+		/// Sets the base binding number used for for a uniform resource type when
+		/// automatically assigning bindings.  For GLSL compilation, sets the lowest
+		/// automatically assigned number.  For HLSL compilation, the regsiter number
+		/// assigned to the resource is added to this specified base.
+		/// </summary>
+		public void SetBindingBase (UniformKind kind, UInt32 _base) =>
+			NativeMethods.shaderc_compile_options_set_binding_base (handle, kind, _base);
+		/// <summary>
+		/// Sets the base binding number used for for a uniform resource type when
+		/// automatically assigning bindings when compiling a given shader stage.
+		/// For GLSL compilation, sets the lowest automatically assigned number.  For HLSL compilation, the regsiter number
+		/// assigned to the resource is added to this specified base.
+		/// The stage is assumed to be one of vertex, fragment, tessellation evaluation, tesselation control, geometry, or compute.
+		/// </summary>
+		public void SetBindingBase (ShaderKind shaderKind, UniformKind kind, UInt32 _base) =>
+			NativeMethods.shaderc_compile_options_set_binding_base_for_stage (handle, shaderKind, kind, _base);
+		/// <summary>
+		/// Sets whether the compiler should automatically assign locations to
+		/// uniform variables that don't have explicit locations in the shader source.
+		/// </summary>
+		public bool AutoMapLocations {
+			set => NativeMethods.shaderc_compile_options_set_auto_map_locations (handle, value);
+		}
+		/// <summary>
+		/// Sets a descriptor set and binding for an HLSL register in the given stage.
+		/// This method keeps a copy of the string data.
+		/// </summary>
+		public void SetHlslRegisterSetAndBinding (ShaderKind shaderKind, string reg, string set, string binding) =>
+			NativeMethods.shaderc_compile_options_set_hlsl_register_set_and_binding_for_stage (handle, shaderKind, reg, set, binding);
+		/// <summary>
+		/// Sets a descriptor set and binding for an HLSL register for all shader stages.
+		/// This method keeps a copy of the string data.
+		/// </summary>
+		public void SetHlslRegisterSetAndBinding (string reg, string set, string binding) =>
+			NativeMethods.shaderc_compile_options_set_hlsl_register_set_and_binding (handle, reg, set, binding);
+
+		/// <summary>
+		/// Sets whether the compiler should enable extension
+		/// SPV_GOOGLE_hlsl_functionality1.
+		/// </summary>
+		public bool HlslFunctionality1 {
+			set => NativeMethods.shaderc_compile_options_set_hlsl_functionality1 (handle, value);
+		}
 		/// <summary>
 		/// Sets whether the compiler should invert position.Y output in vertex shader.
 		/// </summary>
 		public bool InvertY { set => NativeMethods.shaderc_compile_options_set_invert_y (handle, value); }
+		/// <summary>
+		/// Sets whether the compiler generates code for max and min builtins which,
+		/// if given a NaN operand, will return the other operand. Similarly, the clamp
+		/// builtin will favour the non-NaN operands, as if clamp were implemented
+		/// as a composition of max and min.
+		/// </summary>
+		public bool NanClamp {
+			set => NativeMethods.shaderc_compile_options_set_nan_clamp (handle, value);
+		}
 
 
 		#region IDisposable implementation

@@ -10,13 +10,29 @@ namespace shaderc {
 		IntPtr handle;
 		public Options Options { get; private set; }
 
-		public Compiler () {
+		/// <summary>
+		/// Initializes a new instance of the <see cref="T:shaderc.Compiler"/> class.
+		/// If `Options` is null, a default one will be created with Includes resolution enabled.
+		/// </summary>
+		public Compiler (Options options = null) {
 			handle = NativeMethods.shaderc_compiler_initialize ();
 			if (handle == IntPtr.Zero)
 				throw new Exception ("error");
-			Options = new Options ();
+			Options = options ?? new Options ();
 		}
 
+		public static void GetSpvVersion (out SpirVVersion version, out uint revision) =>
+			NativeMethods.shaderc_get_spv_version (out version, out revision);
+		/// <summary>
+		/// Try Parses the version and profile from a given null-terminated string,
+		/// version and profile are returned through arguments.
+		/// </summary>
+		/// <returns>Returns false if the string can not be parsed. Returns true when the parsing succeeds.</returns>
+		/// <param name="str">string containing both version and profile, like: '450core'.</param>
+		/// <param name="version">Version.</param>
+		/// <param name="profile">Profile.</param>
+		public static bool TryParseVersionProfile (string str, out int version, out Profile profile) =>
+			NativeMethods.shaderc_parse_version_profile (str, out version, out profile);
 
 		/// <summary>
 		/// Compile the specified path, shaderKind and entry_point.

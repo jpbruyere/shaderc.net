@@ -61,13 +61,25 @@ namespace shaderc {
 	/// - bits 8 to 15: minor version number
 	/// - bits 0 to 7: zero
 	/// </remarks>
-	public enum SpirVVersion : UInt32 {
-		shaderc_spirv_version_1_0 = 0x010000u,
-		shaderc_spirv_version_1_1 = 0x010100u,
-		shaderc_spirv_version_1_2 = 0x010200u,
-		shaderc_spirv_version_1_3 = 0x010300u,
-		shaderc_spirv_version_1_4 = 0x010400u,
-		shaderc_spirv_version_1_5 = 0x010500u
+	public struct SpirVVersion : IEquatable<SpirVVersion> {
+		internal readonly UInt32 version;
+
+		public uint Major => (version & 0xff0000) >> 16;
+		public uint Minor => (version & 0xff00) >> 8;
+
+		public bool Equals (SpirVVersion other) 
+			=> version == other.version;
+		public override int GetHashCode () =>
+			version.GetHashCode ();
+		public override bool Equals (object obj) =>
+			obj is SpirVVersion sv &&  Equals (sv);
+		public SpirVVersion (UInt32 version) {
+			this.version = version;
+		}
+		public SpirVVersion (uint major, uint minor) {
+			this.version = (major << 16) + (minor << 8);
+		}
+		public override string ToString () => $"SPIR-V {Major}.{Minor}";
 	}
 
 	public enum SourceLanguage : byte {
@@ -331,13 +343,13 @@ namespace shaderc {
 		internal static extern IntPtr shaderc_result_get_error_message (IntPtr result);
 
 		[DllImport (lib, CallingConvention = CallingConvention.Cdecl)]
-		internal static extern void shaderc_get_spv_version (out uint version, out uint revision);
+		internal static extern void shaderc_get_spv_version (out SpirVVersion version, out uint revision);
 
 		// Parses the version and profile from a given null-terminated string
 		// containing both version and profile, like: '450core'. Returns false if
 		// the string can not be parsed. Returns true when the parsing succeeds. The
 		// parsed version and profile are returned through arguments.
-		[DllImport (lib, CallingConvention = CallingConvention.Cdecl)]
+		[DllImport (lib, CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
 		internal static extern bool shaderc_parse_version_profile (string str, out int version, out Profile profile);
 
 		// Sets includer callback functions.

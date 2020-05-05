@@ -3,16 +3,28 @@
 	<PropertyGroup>
 		<TargetFrameworks>netstandard2.0</TargetFrameworks>
 		
-		<AssemblyVersion>0.1.0</AssemblyVersion>		
+		<ReleaseVersion>0.1.0</ReleaseVersion>		
+		<AssemblyVersion>$(ReleaseVersion)</AssemblyVersion>
+		<PackageVersion>$(ReleaseVersion)</PackageVersion>
+		
 		<Description>shaderc binding for .net</Description>
-		<Copyright>Copyright 2020 (c) Jean-Philippe Bruyère. All rights reserved.</Copyright>
-		<PackageLicence>MIT</PackageLicence>
-		<PackageTags>vulkan shaderc glsl net binding shader</PackageTags>
-		<PackageVersion>$(AssemblyVersion)-beta</PackageVersion>
+		<RepositoryUrl>https://github.com/jpbruyere/shaderc.net.git</RepositoryUrl>
+		<PackageTags>vulkan opengl shaderc glsl hlsl net binding shader</PackageTags>
+		
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-		<PackageLicenseExpression>MIT</PackageLicenseExpression>
-				
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		
+		<PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
 		<PackageProjectUrl>https://github.com/jpbruyere/shaderc.net/blob/master/README.md</PackageProjectUrl>
+		<License>MIT</License>
+		<Authors>Jean-Philippe Bruyère</Authors>
+		<Copyright>Copyright 2020 (c) Jean-Philippe Bruyère. All rights reserved.</Copyright>
+		<PackageReleaseNotes>			
+		</PackageReleaseNotes>
+
+		<SynchReleaseVersion>false</SynchReleaseVersion>
+		<NoWarn>$(NoWarn);1591</NoWarn>
+		
 <!--		<Icon>vk.net-64.png</Icon>
 		<PackageIcon>vk.net-64.png</PackageIcon>-->
 		

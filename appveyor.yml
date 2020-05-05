@@ -1,0 +1,15 @@
+version: '0.2.2.{build}'
+configuration:
+- Debug
+- Release
+platform: Any CPU
+init:
+- ps: $Env:LABEL = "CI" + $Env:APPVEYOR_BUILD_NUMBER.PadLeft(5, "0")
+before_build:
+- appveyor-retry dotnet restore -v Minimal
+build_script:
+- dotnet build -c %CONFIGURATION% --no-dependencies --version-suffix %LABEL%
+after_build:  
+- dotnet pack -c %CONFIGURATION% --no-build --version-suffix %LABEL% -o artifacts
+artifacts:
+- path: artifacts\**\*.*

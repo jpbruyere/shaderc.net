@@ -19,11 +19,17 @@ namespace tests {
 		}
 
 		static void Main (string[] args) {
+
+
+			Compiler.GetSpvVersion (out SpirVVersion version, out uint revision);
+			Console.WriteLine ($"SpirV: version={version} revision={revision}");
+
+
 			using (Compiler comp = new Compiler ()) {			
 				compile (comp, @"shaders/debug.vert", ShaderKind.VertexShader);
 				compile (comp, @"shaders/debug.frag", ShaderKind.FragmentShader);
 
-				comp.Options.IncludeLocations.Add ("shaders");
+				comp.Options.IncludeDirectories.Add ("shaders");
 				compile (comp, @"shaders/deferred/GBuffPbr.frag", ShaderKind.FragmentShader);
 			}
 		}

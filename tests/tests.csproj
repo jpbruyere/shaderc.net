@@ -5,10 +5,10 @@
 		<TargetFrameworks>net472</TargetFrameworks>
 		<EnableDefaultNoneItems>false</EnableDefaultNoneItems>
 		<OutputPath>$(SolutionDir)build\$(Configuration)\</OutputPath>
-		<IntermediateOutputPath>$(SolutionDir)build\obj\$(Configuration)\</IntermediateOutputPath>
+		<IntermediateOutputPath>$(SolutionDir)build\obj\$(Configuration)\</IntermediateOutputPath>		
 	</PropertyGroup>
 	<ItemGroup>
-	  <ProjectReference Include="..\shaderc\shaderc.csproj" />
+	  <ProjectReference Include="..\shaderc.net\shaderc.net.csproj" />
 	</ItemGroup>
 	<ItemGroup>
 		<!--<EmbeddedResource Include="shaders\**\*.*">
