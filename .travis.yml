@@ -8,5 +8,5 @@ env:
     - FrameworkPathOverride=/usr/lib/mono/4.5/
 
 script:
-    - dotnet build shaderc.net.sln
+    - dotnet build shaderc.sln
     
