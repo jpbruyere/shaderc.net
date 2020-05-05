@@ -1,9 +1,8 @@
-﻿// Copyright (c) 2013-2020  Jean-Philippe Bruyère <jp_bruyere@hotmail.com>
+﻿// Copyright (c) 2020  Jean-Philippe Bruyère <jp_bruyere@hotmail.com>
 //
 // This code is licensed under the MIT license (MIT) (http://opensource.org/licenses/MIT)
 using System;
 using System.IO;
-using System.Runtime.InteropServices;
 
 namespace shaderc {
 	public class Compiler : IDisposable {
@@ -80,10 +79,13 @@ namespace shaderc {
 		}
 
 		protected virtual void Dispose (bool disposing) {
+			if (handle == IntPtr.Zero)
+				return;
+
 			if (disposing)
 				Options.Dispose ();
-			if (!disposing || handle == IntPtr.Zero)
-				return;
+			else			
+				Console.WriteLine ("[shaderc]Compiler disposed by finalyser");
 
 			NativeMethods.shaderc_compiler_release (handle);
 			handle = IntPtr.Zero;

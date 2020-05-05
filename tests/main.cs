@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2013-2020  Jean-Philippe Bruyère <jp_bruyere@hotmail.com>
+﻿// Copyright (c) 2020  Jean-Philippe Bruyère <jp_bruyere@hotmail.com>
 //
 // This code is licensed under the MIT license (MIT) (http://opensource.org/licenses/MIT)
 using System;
@@ -13,9 +13,9 @@ namespace tests {
 				if (res.Status != Status.Success) {
 					Console.WriteLine ($"\terrs:{res.ErrorCount} warns:{res.WarningCount}");
 					Console.WriteLine ($"\t{res.ErrorMessage}");
+
 				}
 			}
-
 		}
 
 		static void Main (string[] args) {
@@ -25,7 +25,8 @@ namespace tests {
 			Console.WriteLine ($"SpirV: version={version} revision={revision}");
 
 
-			using (Compiler comp = new Compiler ()) {			
+			using (Compiler comp = new Compiler ()) {	
+					
 				compile (comp, @"shaders/debug.vert", ShaderKind.VertexShader);
 				compile (comp, @"shaders/debug.frag", ShaderKind.FragmentShader);
 
