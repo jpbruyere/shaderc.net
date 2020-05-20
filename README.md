@@ -25,8 +25,8 @@ using (Compiler comp = new Compiler ()) {
   using (Result res = comp.Compile ("test.vert", ShaderKind.VertexShader)) {
     if (res.Status == Status.Success) {
       VkShaderModuleCreateInfo ci = VkShaderModuleCreateInfo.New ();
-      ci.codeSize = codeSize;
-      ci.pCode = code;
+      ci.codeSize = res.codeSize;
+      ci.pCode = res.code;
       vkCreateShaderModule (VkDev, ref moduleCreateInfo, IntPtr.Zero, out VkShaderModule shaderModule));
 ```
 
@@ -47,7 +47,7 @@ comp.Options.IncludeDirectories.AddRange ("shaders", @"c:\test");
 If you want to override the default include resolution, to search for embedded ressources for example, derive the `Options` class and override the `TryFindInclude` method.
 ```csharp
 class OptionsWithCustomIncResolve : Options {
-  protected override bool TryFindInclude (string source, string include, IncludeType incType, out string incFile, out string incContent) {
+  protected override bool TryFindInclude (string sourcePath, string includePath, IncludeType incType, out string incFile, out string incContent) {
 ...
 ```
 

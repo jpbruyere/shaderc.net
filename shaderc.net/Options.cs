@@ -60,14 +60,14 @@ namespace shaderc {
 		/// this Options instance must have been created with enableIncludes set to 'true'.
 		/// </summary>
 		/// <returns><c>true</c>, if find include was tryed, <c>false</c> otherwise.</returns>
-		/// <param name="source">requesting source name</param>
-		/// <param name="include">include name to search for.</param>
+		/// <param name="sourcePath">requesting source name</param>
+		/// <param name="includePath">include name to search for.</param>
 		/// <param name="incType">As in c, relative include or global</param>
 		/// <param name="incFile">the resolved name of the include, empty if resolution failed</param>
 		/// <param name="incContent">if resolution succeeded, contain the source code in plain text of the include</param>
-		protected virtual bool TryFindInclude (string source, string include, IncludeType incType, out string incFile, out string incContent) {
+		protected virtual bool TryFindInclude (string sourcePath, string includePath, IncludeType incType, out string incFile, out string incContent) {
 			if (incType == IncludeType.Relative) {
-				incFile = Path.Combine (Path.GetDirectoryName (source), include);
+				incFile = Path.Combine (Path.GetDirectoryName (sourcePath), includePath);
 				if (File.Exists (incFile)) {
 					using (StreamReader sr = new StreamReader (incFile))
 						incContent = sr.ReadToEnd ();
@@ -76,7 +76,7 @@ namespace shaderc {
 
 			} else {
 				foreach (string incDir in IncludeDirectories) {
-					incFile = Path.Combine (incDir, include);
+					incFile = Path.Combine (incDir, includePath);
 					if (File.Exists (incFile)) {
 						using (StreamReader sr = new StreamReader (incFile))
 							incContent = sr.ReadToEnd ();
