@@ -69,7 +69,7 @@ namespace shaderc {
 		/// kind in case it failed to deduce the shader kind from source string.</param>
 		/// <param name="entry_point">defines the name of the entry point to associate with this GLSL source.</param>
 		public Result Compile (string source, string fileName, ShaderKind shaderKind, string entry_point = "main") {
-			return new Result (NativeMethods.shaderc_compile_into_spv (handle, source, (ulong)source.Length, (byte)shaderKind, fileName, "main", Options.handle));
+			return new Result (NativeMethods.shaderc_compile_into_spv (handle, source, (ulong)source.Length, (byte)shaderKind, fileName, entry_point, Options.handle));
 		}
 
 		#region IDisposable implementation
