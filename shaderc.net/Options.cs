@@ -96,10 +96,8 @@ namespace shaderc {
 			Options opts = optionsDic[userData.ToInt32 ()];
 			string content = "", incFile = "";
 
-			if (opts.TryFindInclude (requestingSource, requestedSource, (IncludeType)type, out incFile, out content))
-				using (StreamReader sr = new StreamReader (incFile))
-					content = sr.ReadToEnd ();
-
+			opts.TryFindInclude (requestingSource, requestedSource, (IncludeType)type, out incFile, out content);
+			
 			IncludeResult result = new IncludeResult (incFile, content, userData.ToInt32 ());
 			IntPtr irPtr = Marshal.AllocHGlobal (Marshal.SizeOf<IncludeResult> ());
 			Marshal.StructureToPtr (result, irPtr, true);
