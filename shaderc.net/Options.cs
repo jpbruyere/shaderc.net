@@ -95,8 +95,12 @@ namespace shaderc {
 
 			Options opts = optionsDic[userData.ToInt32 ()];
 			string content = "", incFile = "";
-
-			opts.TryFindInclude (requestingSource, requestedSource, (IncludeType)type, out incFile, out content);
+			
+			if (!opts.TryFindInclude (requestingSource, requestedSource, (IncludeType)type, out incFile, out content)) {
+				incFile = "";
+				if (content == null || content.Length == 0)
+					content = "Cannot find shader '" + requestedSource + "' included by '" + requestingSource + "'.";
+			}
 			
 			IncludeResult result = new IncludeResult (incFile, content, userData.ToInt32 ());
 			IntPtr irPtr = Marshal.AllocHGlobal (Marshal.SizeOf<IncludeResult> ());
