@@ -86,7 +86,7 @@ namespace shaderc {
 			}
 
 			incFile = "";
-			incContent = "Cannot find shader '" + includePath + "' included by '" + sourcePath + "'.";;
+			incContent = "Cannot find shader '" + includePath + "' included by '" + sourcePath + "'.";
 			return false;
 		}
 
@@ -96,9 +96,7 @@ namespace shaderc {
 			Options opts = optionsDic[userData.ToInt32 ()];
 			string content = "", incFile = "";
 			
-			if (!opts.TryFindInclude (requestingSource, requestedSource, (IncludeType)type, out incFile, out content)) {
-				incFile = "";
-			}
+			opts.TryFindInclude (requestingSource, requestedSource, (IncludeType)type, out incFile, out content);
 			
 			IncludeResult result = new IncludeResult (incFile, content, userData.ToInt32 ());
 			IntPtr irPtr = Marshal.AllocHGlobal (Marshal.SizeOf<IncludeResult> ());
