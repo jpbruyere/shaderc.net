@@ -64,7 +64,7 @@ namespace shaderc {
 		/// <param name="includePath">include name to search for.</param>
 		/// <param name="incType">As in c, relative include or global</param>
 		/// <param name="incFile">the resolved name of the include, empty if resolution failed</param>
-		/// <param name="incContent">if resolution succeeded, contain the source code in plain text of the include</param>
+		/// <param name="incContent">if resolution succeeded, contains the source code in plain text of the include. Otherwise, contains an error message.</param>
 		protected virtual bool TryFindInclude (string sourcePath, string includePath, IncludeType incType, out string incFile, out string incContent) {
 			if (incType == IncludeType.Relative) {
 				incFile = Path.Combine (Path.GetDirectoryName (sourcePath), includePath);
@@ -86,7 +86,7 @@ namespace shaderc {
 			}
 
 			incFile = "";
-			incContent = "";
+			incContent = "Cannot find shader '" + includePath + "' included by '" + sourcePath + "'.";
 			return false;
 		}
 
@@ -95,11 +95,9 @@ namespace shaderc {
 
 			Options opts = optionsDic[userData.ToInt32 ()];
 			string content = "", incFile = "";
-
-			if (opts.TryFindInclude (requestingSource, requestedSource, (IncludeType)type, out incFile, out content))
-				using (StreamReader sr = new StreamReader (incFile))
-					content = sr.ReadToEnd ();
-
+			
+			opts.TryFindInclude (requestingSource, requestedSource, (IncludeType)type, out incFile, out content);
+			
 			IncludeResult result = new IncludeResult (incFile, content, userData.ToInt32 ());
 			IntPtr irPtr = Marshal.AllocHGlobal (Marshal.SizeOf<IncludeResult> ());
 			Marshal.StructureToPtr (result, irPtr, true);
